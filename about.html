@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us</title>
+  <link rel="stylesheet" href="about.css">
+
+  
+
+</head>
+<body>
+  <div class="about-container">
+    <h1>About Us </h1>
+
+    <section class="about-section">
+      <h2>About the App :</h2>
+      <p>This app is a powerful, modern task and time management solution designed to help you organize your day effortlessly. From creating to-do lists to setting alarms and managing schedules — everything is simplified.</p>
+    </section>
+
+    <section class="about-section">
+      <h2>Key Features :</h2>
+      <ul>
+        <li>📝 Task Management</li>
+        <li>⏰ Alarm Clock with Repeats</li>
+        <li>📅 Calendar and Reminders</li>
+        <li>🕒 Timer and Stopwatch</li>
+        <li>🔒 Secure Login/Signup</li>
+      </ul>
+    </section>
+<br>
+    <section class="about-section">
+      <h2>Developer Info :</h2>
+      <p>Developed with ❤️ by Parallax Studio. Passionate about building simple and smart productivity tools to make your life easier.</p>
+    </section>
+<br>
+    <section class="about-section">
+      <h2>Motive :</h2>
+      <p>Our goal is to bring all productivity features like task lists, reminders, timers, alarms, and calendars into one beautiful, easy-to-use app for daily use.</p>
+    </section><br>
+
+    <section class="about-section">
+      <h2>Contact Information :</h2>
+      <p>Email: parallaxstudio067@gmail.com</p>
+      <p>Phone: +91-7069814579</p>
+    </section>
+<br>
+    <section class="about-section">
+      <h2>Follow Us :</h2>
+      <div class="social-icons">
+        <a href="https://www.youtube.com/@ParallaxStudio-067" target="_blank"><img src="youtube.png" alt="YouTube"></a>
+        <a href="https://www.instagram.com/parallax.v1/" target="_blank"><img src="instagram.png" alt="Instagram"></a>
+        <a href="https://wa.me/7069814579?text=Hello Sir" target="_blank"><img src="whatsapp.png" alt="WhatsApp"></a>
+       
+      </div>
+    </section>
+
+    <a href="task.html" class="back-button">← Back</a>
+
+
+  </div>
+
+  <script src="about.js"></script>
+
+  <!-- Slide Menu HTML -->
+ <body>
+<div id="menuBtn" class="menu-icon">☰</div>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+    <button id="closeBtn" class="close-btn">✖</button>
+  </div>
+
+  <div class="sidebar-section">
+  <button id="signupBtn" onclick="location.href='signup.html'">🔐 Signup</button>
+  <button id="loginBtn" onclick="location.href='login.html'">🔓 Login</button>
+  <button id="logoutBtn" style="display: none;">🚪 Logout</button>
+</div>
+
+  <hr />
+
+  <div class="sidebar-section">
+    <button onclick="goToother()">✨ Other Features</button>
+    <button onclick="goTocoffee()">☕ Buy Me a Coffee</button>
+     <button onclick="goTosettings()">⚙️ Settings</button>
+    <button onclick="goTohelp()">❓ Help</button>
+    <button onclick="goToAboutUs()">ℹ️ About Us</button>
+
+  </div>
+</div>
+
+
+</body>
+<link rel="stylesheet" href="slide.css" />
+<script src="slide.js"></script>
+ 
+ 
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import { getDatabase, ref, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+    authDomain: "taskall-a1.firebaseapp.com",
+    projectId: "taskall-a1",
+    storageBucket: "taskall-a1.firebasestorage.app",
+    messagingSenderId: "630765557561",
+    appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // ✅ Show/hide login/signup/logout buttons
+  onAuthStateChanged(auth, (user) => {
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (!loginBtn || !signupBtn || !logoutBtn) return;
+
+    if (user) {
+      loginBtn.style.display = "none";
+      signupBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+    } else {
+      loginBtn.style.display = "inline-block";
+      signupBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
+    }
+  });
+
+  // ✅ Logout and delete user + data
+  document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (!logoutBtn) return;
+
+    logoutBtn.addEventListener("click", () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const userId = user.uid;
+
+      // 🗑 Delete user's data from database
+      remove(ref(db, `users/${userId}`))
+        .then(() => {
+          // 🧨 Delete user account
+          deleteUser(user)
+            .then(() => {
+              alert("Account and all data deleted.");
+              window.location.href = "signup.html";
+            })
+            .catch((error) => {
+              alert("User deletion error: " + error.message);
+            });
+        })
+        .catch((err) => {
+          alert("Data deletion error: " + err.message);
+        });
+    });
+  });
+</script>
+
+
+
+</body>
+</html>

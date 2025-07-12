@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alarm</title>
+  <link rel="stylesheet" href="alarm.css" />
+
+ 
+
+
+</head>
+<body>
+  <div class="container">
+    <h1>⏰ Set Alarm</h1>
+    <form id="alarm-form">
+      <input type="time" id="alarm-time" required />
+      <input type="text" id="alarm-label" placeholder="Label (e.g. Wake up)" />
+      <select id="repeat-option">
+        <option value="once">Once</option>
+        <option value="daily">Repeat Daily</option>
+      </select>
+      <button type="submit">Set Alarm</button>
+    </form>
+
+    <div id="alarm-list"></div>
+  </div>
+
+  <div id="ringing-popup" class="popup hidden">
+    <p id="ringing-label">Alarm ringing!</p>
+    <button onclick="stopAlarm()">Stop</button>
+  </div>
+
+  <audio id="alarm-sound" src="wake_up.mp3 " preload="auto"></audio>
+  <script src="alarm.js"></script>
+
+  
+  <!-- nav.html -->
+   <link rel="stylesheet" href="task.css" />
+ <link rel="stylesheet" href="nav.css" />
+  <script src="nav.js"></script>
+
+<div class="bottom-navbar">
+  <button class="nav-button" onclick="navigate('timer')">
+    <img src="timer.svg" alt="Timer">
+    <span>Timer</span>
+  </button>
+  <button class="nav-button" onclick="navigate('alarm')">
+    <img src="alarm-clock.svg" alt="Alarm">
+    <span>Alarm</span>
+  </button>
+  <button class="nav-button active" onclick="navigate('task')">
+    <img src="clipboard-check.svg" alt="Task">
+    <span>Task</span>
+  </button>
+  <button class="nav-button" onclick="navigate('reminder')">
+    <img src="bell-ring.svg" alt="Reminder">
+    <span>Reminder</span>
+  </button>
+  <button class="nav-button" onclick="navigate('calendar')">
+    <img src="calendar-days.svg" alt="Calendar">
+    <span>Calendar</span>
+  </button>
+</div>
+
+
+<!-- Slide Menu HTML -->
+ <body>
+<div id="menuBtn" class="menu-icon">☰</div>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+    <button id="closeBtn" class="close-btn">✖</button>
+  </div>
+
+  <div class="sidebar-section">
+  <button id="signupBtn" onclick="location.href='signup.html'">🔐 Signup</button>
+  <button id="loginBtn" onclick="location.href='login.html'">🔓 Login</button>
+  <button id="logoutBtn" style="display: none;">🚪 Logout</button>
+</div>
+
+  <hr />
+
+  <div class="sidebar-section">
+   <button onclick="goToother()">✨ Other Features</button>
+    <button onclick="goTocoffee()">☕ Buy Me a Coffee</button>
+     <button onclick="goTosettings()">⚙️ Settings</button>
+    <button onclick="goTohelp()">❓ Help</button>
+    <button onclick="goToAboutUs()">ℹ️ About Us</button>
+
+</div>
+
+<link rel="stylesheet" href="slide.css" />
+<script src="slide.js"></script>
+
+
+<script type="module">
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+    query,
+    where,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+    authDomain: "taskall-a1.firebaseapp.com",
+    projectId: "taskall-a1",
+    storageBucket: "taskall-a1.firebasestorage.app",
+    messagingSenderId: "630765557561",
+    appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let alarms = [];
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("alarm-form");
+    if (!form) return;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if (!user) return alert("Please log in.");
+
+      const time = document.getElementById("alarm-time").value;
+      const label = document.getElementById("alarm-label").value || "Alarm";
+      const repeat = document.getElementById("repeat-option").value;
+      if (!time) return alert("Please select a time.");
+
+      const alarm = { userId: user.uid, time, label, repeat };
+      const docRef = await addDoc(collection(db, "alarms"), alarm);
+      alarm.id = docRef.id;
+      alarms.push(alarm);
+      renderAlarms();
+      form.reset();
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) loadAlarms(user.uid);
+    });
+
+    setInterval(checkAlarms, 1000);
+  });
+
+  async function loadAlarms(userId) {
+    const q = query(collection(db, "alarms"), where("userId", "==", userId));
+    const snapshot = await getDocs(q);
+    alarms = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderAlarms();
+  }
+
+  function renderAlarms() {
+    const list = document.getElementById("alarm-list");
+    list.innerHTML = "";
+    alarms.forEach((alarm) => {
+      const div = document.createElement("div");
+      div.className = "alarm-item";
+      div.innerHTML = `
+        <div>
+          <strong>${alarm.label}</strong><br/>
+          ${alarm.time} (${alarm.repeat})
+        </div>
+        <div class="alarm-actions">
+          <button class="edit" onclick="editAlarm('${alarm.id}')">Edit</button>
+          <button onclick="deleteAlarm('${alarm.id}')">Delete</button>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  async function deleteAlarm(id) {
+    await deleteDoc(doc(db, "alarms", id));
+    alarms = alarms.filter(a => a.id !== id);
+    renderAlarms();
+  }
+
+  async function editAlarm(id) {
+    const alarm = alarms.find((a) => a.id === id);
+    if (!alarm) return;
+
+    const newTime = prompt("New Time (HH:MM):", alarm.time);
+    const newLabel = prompt("New Label:", alarm.label);
+    if (newTime) alarm.time = newTime;
+    if (newLabel) alarm.label = newLabel;
+
+    await updateDoc(doc(db, "alarms", id), {
+      time: alarm.time,
+      label: alarm.label,
+    });
+
+    renderAlarms();
+  }
+
+  function checkAlarms() {
+    const now = new Date();
+    const currentTime = now.toTimeString().slice(0, 5);
+
+    alarms.forEach((alarm) => {
+      if (alarm.time === currentTime && (!alarm._lastTriggered || alarm._lastTriggered !== currentTime)) {
+        showRingingPopup(alarm.label);
+        alarm._lastTriggered = currentTime;
+
+        if (alarm.repeat === "once") {
+          deleteAlarm(alarm.id);
+        }
+      }
+    });
+  }
+
+  function showRingingPopup(label) {
+    const popup = document.getElementById("ringing-popup");
+    const sound = document.getElementById("alarm-sound");
+
+    document.getElementById("ringing-label").innerText = `${label} is ringing!`;
+    popup.classList.remove("hidden");
+    sound.play();
+  }
+
+  function stopAlarm() {
+    document.getElementById("ringing-popup").classList.add("hidden");
+    const audio = document.getElementById("alarm-sound");
+    audio.pause();
+    audio.currentTime = 0;
+  }
+
+  window.stopAlarm = stopAlarm;
+  window.deleteAlarm = deleteAlarm;
+  window.editAlarm = editAlarm;
+
+  document.addEventListener("DOMContentLoaded", () => {
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      if (loginBtn) loginBtn.style.display = "none";
+      if (signupBtn) signupBtn.style.display = "none";
+      if (logoutBtn) logoutBtn.style.display = "inline-block";
+    } else {
+      if (loginBtn) loginBtn.style.display = "inline-block";
+      if (signupBtn) signupBtn.style.display = "inline-block";
+      if (logoutBtn) logoutBtn.style.display = "none";
+    }
+  });
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        alert("Logged out!");
+        window.location.href = "login.html";
+      }).catch((error) => {
+        alert("Logout error: " + error.message);
+      });
+    });
+  }
+});
+
+
+</script>
+
+
+</body>
+</html>

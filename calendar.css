@@ -1,0 +1,104 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom right, #3a7bd5, #00d2ff);
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.calendar-container {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.calendar-container h1{
+  text-align: center;
+}
+
+.calendar-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-controls button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.calendar-controls button:hover {
+  background-color: #0056b3;
+}
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+}
+
+.day-names,
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.day {
+  text-align: center;
+  padding: 0.5rem 0;
+  font-weight: bold;
+}
+
+.red {
+  color: red;
+}
+
+.date {
+  text-align: center;
+  padding: 0.8rem 0.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.date:hover {
+  background-color: #f0f0f0;
+}
+
+.holiday {
+  background-color: #e25252;
+  color: black;
+  font-weight: bold;
+}
+
+#festival-info {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #f1f8ff;
+  border-left: 4px solid #007bff;
+  display: none;
+  border-radius: 6px;
+}
+
+.today {
+  background-color: #a9fca6;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  border: 2px solid #93c596;
+}
+
+*{
+   font-family: 'Century Gothic', sans-serif;
+  font-weight: 600; /* Normal */
+
+}

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analog Clock & Timer</title>
+  <link rel="stylesheet" href="timer.css" />
+  
+
+
+</head>
+<body>
+  <div class="mobile-container">
+    <div class="analog-clock">
+      <div class="dial"></div>
+      <div class="numbers">
+        <span style="--i:1;">1</span>
+        <span style="--i:2;">2</span>
+        <span style="--i:3;">3</span>
+        <span style="--i:4;">4</span>
+        <span style="--i:5;">5</span>
+        <span style="--i:6;">6</span>
+        <span style="--i:7;">7</span>
+        <span style="--i:8;">8</span>
+        <span style="--i:9;">9</span>
+        <span style="--i:10;">10</span>
+        <span style="--i:11;">11</span>
+        <span style="--i:12;">12</span>
+      </div>
+      <div class="hand hour" id="hourHand"></div>
+      <div class="hand minute" id="minuteHand"></div>
+      <div class="hand second" id="secondHand"></div>
+
+      
+    </div>
+
+    <div class="digital-timer">
+       <div id="display">00:00:00</div>
+      <div class="buttons">
+        <button id="startBtn">Start</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+     
+    </div>
+  </div>
+
+  <script src="timer.js"></script>
+
+
+ 
+  
+  
+  
+  <link rel="stylesheet" href="task.css" />
+
+
+
+<!-- nav.html -->
+ <link rel="stylesheet" href="nav.css" />
+  <script src="nav.js"></script>
+
+<div class="bottom-navbar">
+  <button class="nav-button" onclick="navigate('timer')">
+    <img src="timer.svg" alt="Timer">
+    <span>Timer</span>
+  </button>
+  <button class="nav-button" onclick="navigate('alarm')">
+    <img src="alarm-clock.svg" alt="Alarm">
+    <span>Alarm</span>
+  </button>
+  <button class="nav-button active" onclick="navigate('task')">
+    <img src="clipboard-check.svg" alt="Task">
+    <span>Task</span>
+  </button>
+  <button class="nav-button" onclick="navigate('reminder')">
+    <img src="bell-ring.svg" alt="Reminder">
+    <span>Reminder</span>
+  </button>
+  <button class="nav-button" onclick="navigate('calendar')">
+    <img src="calendar-days.svg" alt="Calendar">
+    <span>Calendar</span>
+  </button>
+</div>
+
+
+<!-- Slide Menu HTML -->
+ <body>
+<div id="menuBtn" class="menu-icon">☰</div>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+    <button id="closeBtn" class="close-btn">✖</button>
+  </div>
+
+  <div class="sidebar-section">
+  <button id="signupBtn" onclick="location.href='signup.html'">🔐 Signup</button>
+  <button id="loginBtn" onclick="location.href='login.html'">🔓 Login</button>
+  <button id="logoutBtn" style="display: none;">🚪 Logout</button>
+</div>
+
+  <hr />
+
+  <div class="sidebar-section">
+   <button onclick="goToother()">✨ Other Features</button>
+    <button onclick="goTocoffee()">☕ Buy Me a Coffee</button>
+     <button onclick="goTosettings()">⚙️ Settings</button>
+    <button onclick="goTohelp()">❓ Help</button>
+    <button onclick="goToAboutUs()">ℹ️ About Us</button>
+
+  </div>
+</div>
+</body>
+<link rel="stylesheet" href="slide.css" />
+<script src="slide.js"></script>
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import { getDatabase, ref, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+    authDomain: "taskall-a1.firebaseapp.com",
+    projectId: "taskall-a1",
+    storageBucket: "taskall-a1.firebasestorage.app",
+    messagingSenderId: "630765557561",
+    appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // ✅ Show/hide login/signup/logout buttons
+  onAuthStateChanged(auth, (user) => {
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (!loginBtn || !signupBtn || !logoutBtn) return;
+
+    if (user) {
+      loginBtn.style.display = "none";
+      signupBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+    } else {
+      loginBtn.style.display = "inline-block";
+      signupBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
+    }
+  });
+
+  // ✅ Logout and delete user + data
+  document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (!logoutBtn) return;
+
+    logoutBtn.addEventListener("click", () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const userId = user.uid;
+
+      // 🗑 Delete user's data from database
+      remove(ref(db, `users/${userId}`))
+        .then(() => {
+          // 🧨 Delete user account
+          deleteUser(user)
+            .then(() => {
+              alert("Account and all data deleted.");
+              window.location.href = "signup.html";
+            })
+            .catch((error) => {
+              alert("User deletion error: " + error.message);
+            });
+        })
+        .catch((err) => {
+          alert("Data deletion error: " + err.message);
+        });
+    });
+  });
+</script>
+
+
+
+</body>
+
+
+
+</html>

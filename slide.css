@@ -1,0 +1,96 @@
+/* Sidebar Styles */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+   box-sizing: border-box;
+}
+
+.menu-icon {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 17px;
+  background: linear-gradient(135deg, #1cd8d2, #93edc7);  /* Cyan Mint Gradient */
+  color: #fff;
+
+
+
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 1001;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar.active {
+  transform: translateX(0);
+}
+
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 250px;
+  height: 100%;
+background: linear-gradient(135deg, #3a7bd5, #00d2ff);  /* Medium Blue to Bright Aqua */
+
+  color: white;
+  padding: 20px;
+  transition: left 0.4s ease;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.sidebar.show {
+  left: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.close-btn {
+  background: transparent;
+  color: white;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.sidebar-section {
+  margin-top: 20px;
+}
+
+.sidebar-section button {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #ffffff20;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.sidebar-section button:hover {
+  background: #ffffff40;
+}
+
+hr {
+  border: 1px solid #ffffff30;
+  margin: 20px 0;
+}
+

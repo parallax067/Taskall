@@ -1,0 +1,80 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #4facfe, #00f2fe); /* Blue gradient */
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.coming-container {
+  padding: 20px;
+}
+
+.loader {
+  border: 6px solid #e0f7ff;
+  border-top: 6px solid #ffffff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1.2s linear infinite;
+  margin: 0 auto 20px auto;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.coming-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #e0f7ff;
+  animation: pulse 1.2s infinite;
+  margin-bottom: 20px;
+}
+
+.back-link {
+  font-size: 14px;
+  color: #ffffff;
+  text-decoration: underline;
+  display: inline-block;
+  padding: 10px 20px;
+  background: linear-gradient(to right, #007bff, #00c6ff);
+  color: white;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
+
+
+
+
+.back-link:hover {
+  opacity: 0.8;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+*{
+   font-family: 'Century Gothic', sans-serif;
+  font-weight: 500; /* Normal */
+
+}

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reminder</title>
+  <link rel="stylesheet" href="reminder.css" />
+
+  
+
+</head>
+<body>
+  
+
+  <div class="container">
+    <h1>🔔Set a Reminder</h1>
+    
+    <form id="reminder-form">
+      <input type="time" id="reminder-time" required />
+      <input type="text" id="reminder-message" placeholder="Reminder message" required />
+      <button type="submit">Add Reminder</button>
+    </form>
+    <div id="reminder-list"></div>
+    <button id="stop-button" style="display: none;">⏹ Stop</button>
+    <audio id="reminder-sound" src="reminder.mp3" preload="auto"></audio>
+  </div>
+
+
+   <!-- Slide Menu HTML -->
+ <body>
+<div id="menuBtn" class="menu-icon">☰</div>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+    <button id="closeBtn" class="close-btn">✖</button>
+  </div>
+  <div class="sidebar-section">
+    <button id="signupBtn" onclick="location.href='signup.html'">🔐 Signup</button>
+    <button id="loginBtn" onclick="location.href='login.html'">🔓 Login</button>
+    <button id="logoutBtn" style="display: none;">🚪 Logout</button>
+  </div>
+
+  
+
+  <hr />
+
+  <div class="sidebar-section">
+   <button onclick="goToother()">✨ Other Features</button>
+    <button onclick="goTocoffee()">☕ Buy Me a Coffee</button>
+     <button onclick="goTosettings()">⚙️ Settings</button>
+    <button onclick="goTohelp()">❓ Help</button>
+    <button onclick="goToAboutUs()">ℹ️ About Us</button>
+
+  </div>
+</div>
+</body>
+<link rel="stylesheet" href="slide.css" />
+<script src="slide.js"></script>
+ <link rel="stylesheet" href="task.css" />
+
+ <!-- nav.html -->
+<link rel="stylesheet" href="nav.css" />
+<script src="nav.js"></script>
+
+<div class="bottom-navbar">
+  <button class="nav-button" onclick="navigate('timer')">
+    <img src="timer.svg" alt="Timer">
+    <span>Timer</span>
+  </button>
+  <button class="nav-button" onclick="navigate('alarm')">
+    <img src="alarm-clock.svg" alt="Alarm">
+    <span>Alarm</span>
+  </button>
+  <button class="nav-button active" onclick="navigate('task')">
+    <img src="clipboard-check.svg" alt="Task">
+    <span>Task</span>
+  </button>
+  <button class="nav-button" onclick="navigate('reminder')">
+    <img src="bell-ring.svg" alt="Reminder">
+    <span>Reminder</span>
+  </button>
+  <button class="nav-button" onclick="navigate('calendar')">
+    <img src="calendar-days.svg" alt="Calendar">
+    <span>Calendar</span>
+  </button>
+</div>
+
+
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // 🔥 Firebase Config
+      const firebaseConfig = {
+        apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+        authDomain: "taskall-a1.firebaseapp.com",
+        projectId: "taskall-a1",
+        storageBucket: "taskall-a1.firebasestorage.app",
+        messagingSenderId: "630765557561",
+        appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      const signupBtn = document.getElementById("signupBtn");
+      const loginBtn = document.getElementById("loginBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const reminderForm = document.getElementById("reminder-form");
+      const reminderList = document.getElementById("reminder-list");
+      const stopBtn = document.getElementById("stop-button");
+      const audio = document.getElementById("reminder-sound");
+
+      const reminders = [];
+
+      // ✅ Show/hide auth buttons
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          loginBtn.style.display = "none";
+          signupBtn.style.display = "none";
+          logoutBtn.style.display = "inline-block";
+          loadReminders(user.uid);
+        } else {
+          loginBtn.style.display = "inline-block";
+          signupBtn.style.display = "inline-block";
+          logoutBtn.style.display = "none";
+        }
+      });
+
+      // ✅ Logout
+      logoutBtn.addEventListener("click", () => {
+        signOut(auth)
+          .then(() => {
+            alert("Logged out!");
+            location.href = "login.html";
+          })
+          .catch((error) => {
+            alert("Logout error: " + error.message);
+          });
+      });
+
+      // ✅ Add Reminder
+      reminderForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        if (!user) return alert("Login required.");
+
+        const time = document.getElementById("reminder-time").value;
+        const message = document.getElementById("reminder-message").value.trim();
+        if (!time || !message) return alert("Please enter both time and message.");
+
+        const reminder = {
+          userId: user.uid,
+          time,
+          message,
+          notified: false
+        };
+
+        const docRef = await addDoc(collection(db, "reminders"), reminder);
+        reminder.id = docRef.id;
+        reminders.push(reminder);
+        renderReminders();
+        reminderForm.reset();
+      });
+
+      // ✅ Load Reminders
+      async function loadReminders(userId) {
+        const q = query(collection(db, "reminders"), where("userId", "==", userId));
+        const snapshot = await getDocs(q);
+        reminders.length = 0;
+        snapshot.forEach(docSnap => {
+          reminders.push({ ...docSnap.data(), id: docSnap.id });
+        });
+        renderReminders();
+      }
+
+      // ✅ Render Reminders
+      function renderReminders() {
+        reminderList.innerHTML = "";
+        reminders.forEach(reminder => {
+          const div = document.createElement("div");
+          div.className = "reminder-item";
+          div.innerHTML = `
+            <strong>${reminder.time}</strong> - ${reminder.message}
+            <button onclick="deleteReminder('${reminder.id}')">Delete</button>
+          `;
+          reminderList.appendChild(div);
+        });
+      }
+
+      // ✅ Delete Reminder
+      window.deleteReminder = async function(id) {
+        await deleteDoc(doc(db, "reminders", id));
+        const index = reminders.findIndex(r => r.id === id);
+        if (index !== -1) reminders.splice(index, 1);
+        renderReminders();
+      };
+
+      // ✅ Check Reminders Every Second
+      function checkReminders() {
+        const now = new Date();
+        const currentTime = now.toTimeString().slice(0, 5);
+        reminders.forEach(async reminder => {
+          if (reminder.time === currentTime && !reminder.notified) {
+            playReminder(reminder.message);
+            reminder.notified = true;
+            await updateDoc(doc(db, "reminders", reminder.id), { notified: true });
+          }
+        });
+      }
+
+      // ✅ Play Reminder
+      function playReminder(message) {
+        audio.muted = false;
+        audio.volume = 1.0;
+        audio.play().catch(err => console.warn("Autoplay blocked", err));
+        stopBtn.style.display = "block";
+
+        if (Notification.permission === "granted") {
+          new Notification("⏰ Reminder", { body: message });
+        } else {
+          alert(`⏰ Reminder: ${message}`);
+        }
+      }
+
+      // ✅ Stop Button
+      stopBtn.addEventListener("click", () => {
+        audio.pause();
+        audio.currentTime = 0;
+        stopBtn.style.display = "none";
+      });
+
+      // ✅ Unlock Audio on First Click
+      document.body.addEventListener("click", () => {
+        audio.play().then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+        }).catch(() => {});
+      }, { once: true });
+
+      // ✅ Request Notification Permission
+      if ("Notification" in window && Notification.permission !== "granted") {
+        Notification.requestPermission();
+      }
+
+      setInterval(checkReminders, 1000);
+    });
+  </script>
+</body>
+</html>

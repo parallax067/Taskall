@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings</title>
+  <link rel="stylesheet" href="settings.css" />
+  
+
+
+</head>
+<body>
+  <div class="container">
+    <h1>Settings</h1>
+
+    <div class="setting-item">
+      <span>Notifications</span>
+      <label class="switch">
+        <input type="checkbox" id="notificationToggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item">
+      <span>Ringtone</span>
+      <select id="ringtoneSelect">
+        <option value="default">Default</option>
+        <option value="beep">Beep</option>
+        <option value="alarm">Alarm</option>
+        <option value="chime">Chime</option>
+      </select>
+    </div>
+
+    <div class="setting-item">
+      <span>About This App</span>
+      <button onclick="showAbout()">Info</button>
+    </div>
+
+    <div class="setting-item nav-links">
+      <a href="calendar.html">Calendar</a>
+      <a href="alarm.html">Alarm</a>
+      <a href="reminder.html">Reminder</a>
+      <a href="timer.html">Timer</a>
+    </div>
+
+    <p id="aboutText" class="hidden">
+      This task app helps you stay organized with alarms, reminders, a calendar, and a timer. Built with ❤️ by Parallax Studio.
+    </p>
+  </div>
+
+   <a href="task.html" class="back-button">← Back</a>
+
+   
+  <script src="settings.js"></script>
+</body>
+</html>
+
+
+  <!-- Slide Menu HTML -->
+ <body>
+<div id="menuBtn" class="menu-icon">☰</div>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+    <button id="closeBtn" class="close-btn">✖</button>
+  </div>
+
+  <div class="sidebar-section">
+  <button id="signupBtn" onclick="location.href='signup.html'">🔐 Signup</button>
+  <button id="loginBtn" onclick="location.href='login.html'">🔓 Login</button>
+  <button id="logoutBtn" style="display: none;">🚪 Logout</button>
+</div>
+
+  <hr />
+
+  <div class="sidebar-section">
+    <button onclick="goToother()">✨ Other Features</button>
+    <button onclick="goTocoffee()">☕ Buy Me a Coffee</button>
+     <button onclick="goTosettings()">⚙️ Settings</button>
+    <button onclick="goTohelp()">❓ Help</button>
+    <button onclick="goToAboutUs()">ℹ️ About Us</button>
+
+  </div>
+</div>
+
+
+
+<link rel="stylesheet" href="slide.css" />
+<script src="slide.js"></script>
+ <link rel="stylesheet" href="task.css" />
+ 
+
+  <!-- ✅ Firebase + Settings.js logic combined here -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+      authDomain: "taskall-a1.firebaseapp.com",
+      projectId: "taskall-a1",
+      storageBucket: "taskall-a1.firebasestorage.app",
+      messagingSenderId: "630765557561",
+      appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const notificationToggle = document.getElementById("notificationToggle");
+      const ringtoneSelect = document.getElementById("ringtoneSelect");
+
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) return;
+
+        const settingsRef = doc(db, "settings", user.uid);
+        const docSnap = await getDoc(settingsRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.notifications) notificationToggle.checked = true;
+          if (data.ringtone) ringtoneSelect.value = data.ringtone;
+        }
+
+        notificationToggle.addEventListener("change", async () => {
+          await updateDoc(settingsRef, {
+            notifications: notificationToggle.checked
+          }).catch(async () => {
+            await setDoc(settingsRef, {
+              notifications: notificationToggle.checked
+            });
+          });
+          alert(`Notifications ${notificationToggle.checked ? "enabled" : "disabled"}`);
+        });
+
+        ringtoneSelect.addEventListener("change", async () => {
+          const selected = ringtoneSelect.value;
+          await updateDoc(settingsRef, {
+            ringtone: selected
+          }).catch(async () => {
+            await setDoc(settingsRef, {
+              ringtone: selected
+            });
+          });
+          playSound(selected);
+        });
+      });
+    });
+
+    function showAbout() {
+      document.getElementById("aboutText").classList.toggle("hidden");
+    }
+
+    function playSound(type) {
+      const sounds = {
+        default: "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg",
+        beep: "https://actions.google.com/sounds/v1/alarms/beep_short.ogg",
+        alarm: "https://actions.google.com/sounds/v1/alarms/bugle_tune.ogg",
+        chime: "https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"
+      };
+      const audio = new Audio(sounds[type]);
+      audio.play();
+    }
+  </script>
+</body>
+</html>
+
+
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="nav.css" />
+  <script src="nav.js"></script>
+
+  
+
+</head>
+
+<body>
+<!-- nav.html -->
+<div class="bottom-navbar">
+  <button class="nav-button" onclick="navigate('timer')">
+    <img src="timer.svg" alt="Timer">
+    <span>Timer</span>
+  </button>
+  <button class="nav-button" onclick="navigate('alarm')">
+    <img src="alarm-clock.svg" alt="Alarm">
+    <span>Alarm</span>
+  </button>
+  <button class="nav-button active" onclick="navigate('task')">
+    <img src="clipboard-check.svg" alt="Task">
+    <span>Task</span>
+  </button>
+  <button class="nav-button" onclick="navigate('reminder')">
+    <img src="bell-ring.svg" alt="Reminder">
+    <span>Reminder</span>
+  </button>
+  <button class="nav-button" onclick="navigate('calendar')">
+    <img src="calendar-days.svg" alt="Calendar">
+    <span>Calendar</span>
+  </button>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import { getDatabase, ref, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+    authDomain: "taskall-a1.firebaseapp.com",
+    projectId: "taskall-a1",
+    storageBucket: "taskall-a1.firebasestorage.app",
+    messagingSenderId: "630765557561",
+    appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // ✅ Show/hide login/signup/logout buttons
+  onAuthStateChanged(auth, (user) => {
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (!loginBtn || !signupBtn || !logoutBtn) return;
+
+    if (user) {
+      loginBtn.style.display = "none";
+      signupBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+    } else {
+      loginBtn.style.display = "inline-block";
+      signupBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
+    }
+  });
+
+  // ✅ Logout and delete user + data
+  document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (!logoutBtn) return;
+
+    logoutBtn.addEventListener("click", () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const userId = user.uid;
+
+      // 🗑 Delete user's data from database
+      remove(ref(db, `users/${userId}`))
+        .then(() => {
+          // 🧨 Delete user account
+          deleteUser(user)
+            .then(() => {
+              alert("Account and all data deleted.");
+              window.location.href = "signup.html";
+            })
+            .catch((error) => {
+              alert("User deletion error: " + error.message);
+            });
+        })
+        .catch((err) => {
+          alert("Data deletion error: " + err.message);
+        });
+    });
+  });
+</script>
+
+   
+</script>
+
+
+</body>
+</html>

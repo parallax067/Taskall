@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="signup.css" />
+  
+
+</head>
+<body>
+  <div class="signup-container">
+    <h2>Create Account</h2>
+    <form id="signupForm">
+      <input type="email" id="signupEmail" placeholder="Enter your email" required />
+      <input type="password" id="signupPassword" placeholder="Enter your password" required />
+      <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="login.html">Login</a></p>
+  </div>
+
+  <!-- Firebase App + Auth CDN -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    // ✅ Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+      authDomain: "taskall-a1.firebaseapp.com",
+      projectId: "taskall-a1",
+      storageBucket: "taskall-a1.firebasestorage.app",
+      messagingSenderId: "630765557561",
+      appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+    };
+
+    // ✅ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ✅ Form submit handler
+    document.getElementById("signupForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+
+      // ✅ Alphanumeric password check
+      const isAlphanumeric = /^[A-Za-z0-9]+$/.test(password);
+      if (!isAlphanumeric) {
+        alert("Password must be alphanumeric (letters and numbers only).");
+        return;
+      }
+
+      // ✅ Firebase Signup
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Signup successful!");
+          window.location.href = "login.html";
+        })
+        .catch((error) => {
+          console.error("Signup Error:", error.code, error.message);
+          if (error.code === 'auth/email-already-in-use') {
+            alert("Email already registered. Please login.");
+          } else {
+            alert("Signup failed: " + error.message);
+          }
+        });
+    });
+  </script>
+</body>
+</html>

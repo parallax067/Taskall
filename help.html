@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Help - Task App</title>
+  <link rel="stylesheet" href="help.css" />
+
+
+
+
+<body>
+  <div class="help-container">
+    <h1>📘 Help & Support</h1>
+    <section>
+  <h2>🚀 Getting Started</h2>
+  <p>1. Sign up or log in.<br>
+     2. Navigate to alarm, reminder, or calendar pages.<br>
+     3. Use the bottom menu or side links to switch features.</p>
+</section>
+
+<section>
+  <h2>📱 Using on Mobile</h2>
+  <p>This app is mobile-friendly. For best performance:</p>
+  <ul>
+    <li>Add to Home Screen for quick access</li>
+    <li>Allow sound & notification permissions</li>
+    <li>Keep the app open in background for alarms/reminders</li>
+  </ul>
+</section>
+
+<section>
+  <h2>⏰ Alarm Help</h2>
+  <ul>
+    <li>Use 24-hour format (e.g., 07:00, 18:30)</li>
+    <li>Add a label to identify the alarm</li>
+    <li>Use repeat for recurring alarms (daily, weekdays, etc.)</li>
+    <li>Alarms work in background if page is left open</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🔔 Reminder Help</h2>
+  <ul>
+    <li>Set reminder message + exact time</li>
+    <li>Notifications & sounds will trigger at the exact minute</li>
+    
+  </ul>
+</section>
+
+<section>
+  <h2>📅 Calendar Help</h2>
+  <ul>
+    <li>Shows full month view with holidays & Indian festivals</li>
+    <li>Sundays are marked red</li>
+    <li>Click on dates to see festivals/events</li>
+  </ul>
+</section>
+
+<section>
+  <h2>🔐 Login & Account</h2>
+  <ul>
+    <li>Use your email + password to log in</li>
+    <li>If you log out, you must log back in to access alarms/reminders</li>
+  </ul>
+</section>
+
+
+<section>
+  <h2>💡 Tips & Best Practices</h2>
+  <ul>
+    <li>Test alarms once after setting to make sure sound works</li>
+    <li>Use labels like "Wake Up", "Meeting", etc. for clarity</li>
+  </ul>
+</section>
+
+
+    <section>
+      <h2>🧭 About This App</h2>
+      <p>This task app helps you manage alarms, reminders, calendar events, and more — all in one place.</p>
+    </section>
+
+    <section>
+      <h2>🛠 Features</h2>
+      <ul>
+        <li><strong>Alarm:</strong> Set, edit, repeat alarms with custom sounds.</li>
+        <li><strong>Reminder:</strong> Schedule reminders with notification and sound.</li>
+        <li><strong>Calendar:</strong> View days, dates, festivals, and holidays.</li>
+        <li><strong>Login/Signup:</strong> Secure your data using Firebase.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>❓ Frequently Asked Questions</h2>
+      <div class="faq-item">
+        <h3 class="faq-question">Why isn't my alarm ringing?</h3>
+        <p class="faq-answer">Ensure you gave permission for sound and background tasks. Keep the app open in the background.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-question">Where is my data stored?</h3>
+        <p class="faq-answer">All your data is stored securely in your device and in Firebase if logged in.</p>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-question">Can I use the app offline?</h3>
+        <p class="faq-answer">Yes. Most features like alarm and reminder work offline. Sync requires internet.</p>
+      </div>
+    </section>
+    <section>
+  <h2>⚠️ Troubleshooting</h2>
+  <div class="faq-item">
+    <h3 class="faq-question">I don't hear alarm sounds</h3>
+    <p class="faq-answer">Make sure volume is up and sound is enabled in your browser/app settings.</p>
+  </div>
+  <div class="faq-item">
+    <h3 class="faq-question">Reminders don't show notifications</h3>
+    <p class="faq-answer">Allow notifications in browser, and don't close the app tab completely.</p>
+  </div>
+  <div class="faq-item">
+    <h3 class="faq-question">App isn't saving alarms or reminders</h3>
+    <p class="faq-answer">Make sure you're logged in, and localStorage or Firebase is active. Check console for errors.</p>
+  </div>
+</section>
+
+
+    <section>
+      <h2>📩 Contact Support</h2>
+      <p>If you have any issues, feel free to reach out:</p>
+      <ul>
+        <li>Email: <a href="mailto:parallaxstudio067@gmail.com">parallaxstudio067@gmail.com</a></li>
+        <li>Phone: +91-7069814579</li>
+      </ul>
+    </section>
+
+  
+   <a href="task.html" class="back-button">← Back</a>
+
+
+  </div>
+
+  <script src="help.js"></script>
+
+  <!-- Slide Menu HTML -->
+ <body>
+<div id="menuBtn" class="menu-icon">☰</div>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+    <button id="closeBtn" class="close-btn">✖</button>
+  </div>
+
+  <div class="sidebar-section">
+  <button id="signupBtn" onclick="location.href='signup.html'">🔐 Signup</button>
+  <button id="loginBtn" onclick="location.href='login.html'">🔓 Login</button>
+  <button id="logoutBtn" style="display: none;">🚪 Logout</button>
+</div>
+
+  <hr />
+
+  <div class="sidebar-section">
+   <button onclick="goToother()">✨ Other Features</button>
+    <button onclick="goTocoffee()">☕ Buy Me a Coffee</button>
+     <button onclick="goTosettings()">⚙️ Settings</button>
+    <button onclick="goTohelp()">❓ Help</button>
+    <button onclick="goToAboutUs()">ℹ️ About Us</button>
+
+  </div>
+</div>
+</body>
+<link rel="stylesheet" href="slide.css" />
+<script src="slide.js"></script>
+ <link rel="stylesheet" href="task.css" />
+ 
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import { getDatabase, ref, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+    authDomain: "taskall-a1.firebaseapp.com",
+    projectId: "taskall-a1",
+    storageBucket: "taskall-a1.firebasestorage.app",
+    messagingSenderId: "630765557561",
+    appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // ✅ Show/hide login/signup/logout buttons
+  onAuthStateChanged(auth, (user) => {
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (!loginBtn || !signupBtn || !logoutBtn) return;
+
+    if (user) {
+      loginBtn.style.display = "none";
+      signupBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+    } else {
+      loginBtn.style.display = "inline-block";
+      signupBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
+    }
+  });
+
+  // ✅ Logout and delete user + data
+  document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (!logoutBtn) return;
+
+    logoutBtn.addEventListener("click", () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const userId = user.uid;
+
+      // 🗑 Delete user's data from database
+      remove(ref(db, `users/${userId}`))
+        .then(() => {
+          // 🧨 Delete user account
+          deleteUser(user)
+            .then(() => {
+              alert("Account and all data deleted.");
+              window.location.href = "signup.html";
+            })
+            .catch((error) => {
+              alert("User deletion error: " + error.message);
+            });
+        })
+        .catch((err) => {
+          alert("Data deletion error: " + err.message);
+        });
+    });
+  });
+</script>
+
+
+</body>
+</html>

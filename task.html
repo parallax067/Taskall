@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="task.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+
+  
+
+</head>
+
+<body>
+  <div class="container">
+    <button class="add-btn" id="openModal">+ Add Task</button>
+
+    <div class="task-sections">
+      <div class="task-list">
+        <h3>Pending Tasks</h3>
+        <div id="pendingList" class="task-items"></div>
+      </div>
+
+      <div class="task-list">
+        <h3>Completed Tasks</h3>
+        <div id="completedList" class="task-items"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal hidden" id="taskModal">
+    <div class="modal-content">
+      <h2>Add New Task</h2>
+
+      <input type="text" id="taskName" placeholder="Task Name" required />
+      
+      <select id="taskCategory" required>
+        <option value="">-- Select Category --</option>
+        <option value="📚 Study">📚 Study</option>
+        <option value="🧍 Personal">🧍 Personal</option>
+        <option value="💼 Work">💼 Work</option>
+        <option value="🎮 Gaming">🎮 Gaming</option>
+        <option value="💪 Fitness">💪 Fitness</option>
+        <option value="🏠 Home">🏠 Home</option>
+        <option value="📌 Other">📌 Other</option>
+      </select>
+
+      <input type="text" id="taskDate" placeholder="Choose Date" required />
+      <input type="time" id="taskTime" required />
+
+      <div class="modal-buttons">
+        <button id="closeModal" class="cancel-btn">Cancel</button>
+        <button id="addTaskBtn" type="button">Done</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="task.js"></script>
+
+
+<!-- nav.html -->
+<link rel="stylesheet" href="nav.css" />
+<script src="nav.js"></script>
+
+<div class="bottom-navbar">
+  <button class="nav-button" onclick="navigate('timer')">
+    <img src="timer.svg" alt="Timer">
+    <span>Timer</span>
+  </button>
+  <button class="nav-button" onclick="navigate('alarm')">
+    <img src="alarm-clock.svg" alt="Alarm">
+    <span>Alarm</span>
+  </button>
+  <button class="nav-button active" onclick="navigate('task')">
+    <img src="clipboard-check.svg" alt="Task">
+    <span>Task</span>
+  </button>
+  <button class="nav-button" onclick="navigate('reminder')">
+    <img src="bell-ring.svg" alt="Reminder">
+    <span>Reminder</span>
+  </button>
+  <button class="nav-button" onclick="navigate('calendar')">
+    <img src="calendar-days.svg" alt="Calendar">
+    <span>Calendar</span>
+  </button>
+</div>
+
+<!-- Slide Menu HTML -->
+<body>
+  <div id="menuBtn" class="menu-icon">☰</div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h2>Menu</h2>
+      <button id="closeBtn" class="close-btn">✖</button>
+    </div>
+
+    <div class="sidebar-section">
+  <button id="signupBtn" onclick="location.href='signup.html'">🔐 Signup</button>
+  <button id="loginBtn" onclick="location.href='login.html'">🔓 Login</button>
+  <button id="logoutBtn" style="display: none;">🚪 Logout</button> <!-- Hidden initially -->
+</div>
+
+    <hr />
+
+    <div class="sidebar-section">
+      <button onclick="goToother()">✨ Other Features</button>
+      <button onclick="goTocoffee()">☕ Buy Me a Coffee</button>
+      <button onclick="goTosettings()">⚙️ Settings</button>
+      <button onclick="goTohelp()">❓ Help</button>
+      <button onclick="goToAboutUs()">ℹ️ About Us</button>
+    </div>
+  </div>
+
+  
+  <link rel="stylesheet" href="slide.css" />
+  <script src="slide.js"></script>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+    authDomain: "taskall-a1.firebaseapp.com",
+    projectId: "taskall-a1",
+    storageBucket: "taskall-a1.firebasestorage.app",
+    messagingSenderId: "630765557561",
+    appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      loginBtn.style.display = "none";
+      signupBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+      loadUserTasks(user.uid); // load tasks for this user
+    } else {
+      loginBtn.style.display = "inline-block";
+      signupBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
+    }
+  });
+
+  logoutBtn.addEventListener("click", () => {
+    const user = auth.currentUser;
+    if (!user) return;
+    signOut(auth).then(() => {
+      alert("Logged out!");
+      location.href = "login.html";
+    }).catch((error) => {
+      alert("Logout error: " + error.message);
+    });
+  });
+
+  // Load tasks from Firestore
+  async function loadUserTasks(userId) {
+    const q = query(collection(db, "tasks"), where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((docSnap) => {
+      const task = docSnap.data();
+      displayTask(task, docSnap.id, task.completed);
+    });
+  }
+
+  // Save task to Firestore
+  async function saveTaskToFirestore(taskData) {
+    try {
+      const docRef = await addDoc(collection(db, "tasks"), taskData);
+      displayTask(taskData, docRef.id, taskData.completed);
+    } catch (error) {
+      alert("Failed to save task: " + error.message);
+    }
+  }
+
+  // Display task in UI
+  function displayTask(taskData, taskId, completed = false) {
+    const list = completed ? document.getElementById("completedList") : document.getElementById("pendingList");
+
+    const taskItem = document.createElement("div");
+    taskItem.className = "task-item";
+
+    const taskInfo = document.createElement("div");
+    taskInfo.className = "task-info";
+    taskInfo.innerHTML = `
+      <strong>${taskData.name}</strong><br>
+      ${taskData.category}<br>
+      ${taskData.date} at ${taskData.time}
+    `;
+
+    const taskButtons = document.createElement("div");
+    taskButtons.className = "task-buttons";
+
+    const completeBtn = document.createElement("button");
+    completeBtn.className = "complete-btn";
+    completeBtn.textContent = "✅";
+
+    const revertBtn = document.createElement("button");
+    revertBtn.className = "revert-btn";
+    revertBtn.textContent = "↩️";
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-btn";
+    deleteBtn.textContent = "🗑️";
+
+    completeBtn.onclick = async () => {
+      await updateDoc(doc(db, "tasks", taskId), { completed: true });
+      completeBtn.replaceWith(revertBtn);
+      document.getElementById("completedList").appendChild(taskItem);
+    };
+
+    revertBtn.onclick = async () => {
+      await updateDoc(doc(db, "tasks", taskId), { completed: false });
+      revertBtn.replaceWith(completeBtn);
+      document.getElementById("pendingList").appendChild(taskItem);
+    };
+
+    deleteBtn.onclick = async () => {
+      await deleteDoc(doc(db, "tasks", taskId));
+      taskItem.remove();
+    };
+
+    taskButtons.appendChild(completed ? revertBtn : completeBtn);
+    taskButtons.appendChild(deleteBtn);
+
+    taskItem.appendChild(taskInfo);
+    taskItem.appendChild(taskButtons);
+    list.appendChild(taskItem);
+  }
+
+  // Hook form buttons
+  document.addEventListener("DOMContentLoaded", () => {
+    const openModal = document.getElementById("openModal");
+    const closeModal = document.getElementById("closeModal");
+    const taskModal = document.getElementById("taskModal");
+    const addTaskBtn = document.getElementById("addTaskBtn");
+
+    openModal.addEventListener("click", () => taskModal.classList.remove("hidden"));
+    closeModal.addEventListener("click", () => taskModal.classList.add("hidden"));
+
+    addTaskBtn.addEventListener("click", async () => {
+      const name = document.getElementById("taskName").value.trim();
+      const category = document.getElementById("taskCategory").value;
+      const date = document.getElementById("taskDate").value;
+      const time = document.getElementById("taskTime").value;
+      const user = auth.currentUser;
+
+      if (!user) return alert("You must be logged in to save tasks.");
+      if (!name || !category || !date || !time) return alert("Please fill out all fields!");
+
+      const taskData = {
+        userId: user.uid,
+        name,
+        category,
+        date,
+        time,
+        completed: false
+      };
+
+      await saveTaskToFirestore(taskData);
+
+      document.getElementById("taskName").value = "";
+      document.getElementById("taskCategory").value = "";
+      document.getElementById("taskDate").value = "";
+      document.getElementById("taskTime").value = "";
+      taskModal.classList.add("hidden");
+    });
+
+    
+    flatpickr("#taskDate", {
+      altInput: true,
+      altFormat: "F j, Y",
+      dateFormat: "Y-m-d",
+      minDate: "today",
+      theme: "material_blue"
+    });
+  });
+
+  
+</script>
+
+
+</body>
+</html>

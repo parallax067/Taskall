@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indian Festival Calendar 2025</title>
+  <link rel="stylesheet" href="calendar.css" />
+
+  
+  
+
+</head>
+<body>
+  <div class="calendar-container">
+    <h1>📅Calendar 2025</h1>
+    <br>
+    <div class="calendar-controls">
+      <button id="prev-month">◀</button>
+      <span id="month-year"></span>
+      <button id="next-month">▶</button>
+    </div>
+    <div class="calendar">
+      <div class="day-names">
+        <div class="day red">Sun</div>
+        <div class="day">Mon</div>
+        <div class="day">Tue</div>
+        <div class="day">Wed</div>
+        <div class="day">Thu</div>
+        <div class="day">Fri</div>
+        <div class="day">Sat</div>
+      </div>
+      <div class="days" id="calendar-days"></div>
+    </div>
+    <div id="festival-info"></div>
+  </div>
+
+  <audio id="notify-sound" src="notification.mp3" preload="auto"></audio>
+  <script src="calendar.js"></script>
+
+
+
+  <!-- nav.html -->
+   <link rel="stylesheet" href="task.css" />
+ <link rel="stylesheet" href="nav.css" />
+  <script src="nav.js"></script>
+
+<div class="bottom-navbar">
+  <button class="nav-button" onclick="navigate('timer')">
+    <img src="timer.svg" alt="Timer">
+    <span>Timer</span>
+  </button>
+  <button class="nav-button" onclick="navigate('alarm')">
+    <img src="alarm-clock.svg" alt="Alarm">
+    <span>Alarm</span>
+  </button>
+  <button class="nav-button active" onclick="navigate('task')">
+    <img src="clipboard-check.svg" alt="Task">
+    <span>Task</span>
+  </button>
+  <button class="nav-button" onclick="navigate('reminder')">
+    <img src="bell-ring.svg" alt="Reminder">
+    <span>Reminder</span>
+  </button>
+  <button class="nav-button" onclick="navigate('calendar')">
+    <img src="calendar-days.svg" alt="Calendar">
+    <span>Calendar</span>
+  </button>
+</div>
+
+
+<!-- Slide Menu HTML -->
+ <body>
+<div id="menuBtn" class="menu-icon">☰</div>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+    <button id="closeBtn" class="close-btn">✖</button>
+  </div>
+
+  <div class="sidebar-section">
+  <button id="signupBtn" onclick="location.href='signup.html'">🔐 Signup</button>
+  <button id="loginBtn" onclick="location.href='login.html'">🔓 Login</button>
+  <button id="logoutBtn" style="display: none;">🚪 Logout</button>
+</div>
+
+  <hr />
+
+  <div class="sidebar-section">
+  <button onclick="goToother()">✨ Other Features</button>
+  <button onclick="goTocoffee()">☕ Buy Me a Coffee</button>
+  <button onclick="goTosettings()">⚙️ Settings</button>
+  <button onclick="goTohelp()">❓ Help</button>
+  <button onclick="goToAboutUs()">ℹ️ About Us</button>
+
+</div>
+
+<link rel="stylesheet" href="slide.css" />
+<script src="slide.js"></script>
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import { getDatabase, ref, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+    authDomain: "taskall-a1.firebaseapp.com",
+    projectId: "taskall-a1",
+    storageBucket: "taskall-a1.firebasestorage.app",
+    messagingSenderId: "630765557561",
+    appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // ✅ Show/hide login/signup/logout buttons
+  onAuthStateChanged(auth, (user) => {
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (!loginBtn || !signupBtn || !logoutBtn) return;
+
+    if (user) {
+      loginBtn.style.display = "none";
+      signupBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+    } else {
+      loginBtn.style.display = "inline-block";
+      signupBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
+    }
+  });
+
+  // ✅ Logout and delete user + data
+  document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (!logoutBtn) return;
+
+    logoutBtn.addEventListener("click", () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const userId = user.uid;
+
+      // 🗑 Delete user's data from database
+      remove(ref(db, `users/${userId}`))
+        .then(() => {
+          // 🧨 Delete user account
+          deleteUser(user)
+            .then(() => {
+              alert("Account and all data deleted.");
+              window.location.href = "signup.html";
+            })
+            .catch((error) => {
+              alert("User deletion error: " + error.message);
+            });
+        })
+        .catch((err) => {
+          alert("Data deletion error: " + err.message);
+        });
+    });
+  });
+</script>
+
+
+</body>
+
+
+
+
+
+</html>

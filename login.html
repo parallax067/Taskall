@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link rel="stylesheet" href="login.css" />
+  
+  
+
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" placeholder="Enter your email" required />
+      <input type="password" id="loginPassword" placeholder="Enter your password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+  </div>
+
+  <!-- Firebase Auth Login Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    // 🔥 Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+      authDomain: "taskall-a1.firebaseapp.com",
+      projectId: "taskall-a1",
+      storageBucket: "taskall-a1.firebasestorage.app",
+      messagingSenderId: "630765557561",
+      appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Login successful!");
+          window.location.href = "task.html"; // Redirect to main page
+        })
+        .catch((error) => {
+          console.error("Login error:", error.code, error.message);
+          if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+            alert("Invalid email or password.");
+          } else {
+            alert("Login failed: " + error.message);
+          }
+        });
+    });
+  </script>
+</body>
+</html>

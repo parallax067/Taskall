@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Support Us</title>
+  <link rel="stylesheet" href="buymeacoffee.css" />
+
+
+
+</head>
+<script>
+  function copyUPI() {
+    const upi = document.getElementById("upiId").innerText;
+    navigator.clipboard.writeText(upi).then(() => {
+      const msg = document.getElementById("copyMsg");
+      msg.classList.remove("hidden");
+      setTimeout(() => msg.classList.add("hidden"), 2000);
+    });
+  }
+
+  // iOS hide UPI button if needed
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (isIOS) {
+    document.querySelector(".donate-btn").style.display = "none";
+    document.querySelector(".qr-info").style.display = "block";
+  }
+</script>
+
+
+<body>
+  <div class="coffee-container">
+    <img src="https://cdn-icons-png.flaticon.com/512/4151/4151743.png" alt="Coffee" class="coffee-img" />
+
+    <h1>Buy Me a Coffee ☕</h1>
+
+    <p class="message">
+      Hey friend! 💛  
+      This app was built with love, long nights, and lots of coffee.  
+      If it helped you stay on track — consider saying thanks by buying me a coffee.  
+      Even ₹10 can make a big smile appear on this tired face! 😅  
+      Your support keeps the app alive and free forever. 🙏
+    </p>
+
+    <div class="donate-box">
+      <h2>Support via UPI</h2>
+      <img src="upi img.jpeg" alt="UPI QR Code" class="qr-img" />
+       <p class="upi-id">
+  UPI ID: <strong id="upiId">yadav99@fam</strong>
+  <button onclick="copyUPI()" class="copy-btn">Copy</button>
+  
+</p>
+<p id="copyMsg" class="copy-msg hidden">UPI ID copied ✅</p>
+
+      
+      <a href="upi://pay?pa=yadav99@fam&pn=Satish&cu=INR" class="donate-btn">Pay ₹10 / ₹20 / ₹50</a>
+ 
+       
+      
+    </div>
+
+    <footer>
+      ❤️ Thank you for being a part of our journey.
+    </footer>
+  </div>
+
+    <!-- Slide Menu HTML -->
+ <body>
+<div id="menuBtn" class="menu-icon">☰</div>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+    <button id="closeBtn" class="close-btn">✖</button>
+  </div>
+
+  <div class="sidebar-section">
+  <button id="signupBtn" onclick="location.href='signup.html'">🔐 Signup</button>
+  <button id="loginBtn" onclick="location.href='login.html'">🔓 Login</button>
+  <button id="logoutBtn" style="display: none;">🚪 Logout</button>
+</div>
+
+  <hr />
+
+  <div class="sidebar-section">
+   <button onclick="goToother()">✨ Other Features</button>
+    <button onclick="goTocoffee()">☕ Buy Me a Coffee</button>
+     <button onclick="goTosettings()">⚙️ Settings</button>
+    <button onclick="goTohelp()">❓ Help</button>
+    <button onclick="goToAboutUs()">ℹ️ About Us</button>
+
+  </div>
+</div>
+</body>
+<link rel="stylesheet" href="slide.css" />
+<script src="slide.js"></script>
+ <link rel="stylesheet" href="tsk.css" />
+ 
+<a href="task.html" class="back-button">← Back</a>
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import { getDatabase, ref, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAbVAAASbfeB9A_eDqwCDSghOair63zktg",
+    authDomain: "taskall-a1.firebaseapp.com",
+    projectId: "taskall-a1",
+    storageBucket: "taskall-a1.firebasestorage.app",
+    messagingSenderId: "630765557561",
+    appId: "1:630765557561:web:f59b72e0a2d905ab4f7ae8"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // ✅ Show/hide login/signup/logout buttons
+  onAuthStateChanged(auth, (user) => {
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (!loginBtn || !signupBtn || !logoutBtn) return;
+
+    if (user) {
+      loginBtn.style.display = "none";
+      signupBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+    } else {
+      loginBtn.style.display = "inline-block";
+      signupBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
+    }
+  });
+
+  // ✅ Logout and delete user + data
+  document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (!logoutBtn) return;
+
+    logoutBtn.addEventListener("click", () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const userId = user.uid;
+
+      // 🗑 Delete user's data from database
+      remove(ref(db, `users/${userId}`))
+        .then(() => {
+          // 🧨 Delete user account
+          deleteUser(user)
+            .then(() => {
+              alert("Account and all data deleted.");
+              window.location.href = "signup.html";
+            })
+            .catch((error) => {
+              alert("User deletion error: " + error.message);
+            });
+        })
+        .catch((err) => {
+          alert("Data deletion error: " + err.message);
+        });
+    });
+  });
+</script>
+
+
+</body>
+
+</html>
